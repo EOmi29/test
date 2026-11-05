@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>こえで1ぷん（テスト）</title>
+<style>
+:root{--bg:#e8f1f8;--card:#fff;--ink:#1d2b3a;--sub:#5b6b7b;--line:#c6d6e4;--main:#2f7de1;--mainink:#fff;--ans:#16875a;--off:#f3f7fb;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101a24;--card:#192633;--ink:#eef3f8;--sub:#9fb0c0;--line:#2c3f52;--main:#5aa0f5;--mainink:#08121c;--ans:#4cc791;--off:#142029;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101a24;--card:#192633;--ink:#eef3f8;--sub:#9fb0c0;--line:#2c3f52;--main:#5aa0f5;--mainink:#08121c;--ans:#4cc791;--off:#142029;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Hiragino Maru Gothic ProN","BIZ UDPGothic","Yu Gothic",Meiryo,sans-serif;-webkit-tap-highlight-color:transparent;user-select:none;overflow:hidden}
+.screen{display:none;height:100%;padding:2vh 3vw}
+.screen.on{display:flex;flex-direction:column}
+h1{font-size:clamp(26px,5vh,44px);margin:0 0 1.5vh;text-align:center}
+h2{font-size:clamp(16px,2.8vh,22px);margin:0 0 1vh;color:var(--sub)}
+.home{max-width:1000px;margin:0 auto;width:100%;gap:1.6vh;justify-content:center}
+.row{display:flex;gap:1.2vw;flex-wrap:wrap}
+.dan{flex:1 1 0;min-width:70px}
+button,.opt{font:inherit;color:var(--ink);background:var(--card);border:3px solid var(--line);border-radius:16px;cursor:pointer}
+.dan button,.seg button{width:100%;padding:2vh 0;font-size:clamp(20px,4vh,34px);font-weight:700}
+.seg{display:flex;gap:1.2vw}.seg>*{flex:1}
+button[aria-pressed="true"]{background:var(--main);border-color:var(--main);color:var(--mainink)}
+.tools{display:flex;gap:1.2vw;margin-top:1vh}
+.tools button{padding:1vh 2vw;font-size:clamp(14px,2.4vh,20px)}
+.start{width:100%;padding:2.4vh 0;font-size:clamp(24px,4.6vh,40px);font-weight:700;background:var(--ans);border-color:var(--ans);color:#fff;margin-top:1vh}
+.start:disabled{opacity:.4}
+.msg{min-height:1.4em;color:var(--sub);text-align:center;font-size:clamp(14px,2.4vh,20px)}
+.top{display:flex;justify-content:space-between;align-items:center}
+.top button{padding:1vh 2vw;font-size:clamp(14px,2.6vh,22px)}
+.count{font-size:clamp(18px,3.6vh,30px);font-weight:700;color:var(--sub)}
+.play{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--card);border:3px solid var(--line);border-radius:28px;margin-top:1.5vh;text-align:center}
+.q{font-size:clamp(70px,24vh,230px);font-weight:800;line-height:1.1}
+.hint{font-size:clamp(16px,3vh,26px);color:var(--sub);margin-top:2vh}
+.rb{font-size:clamp(28px,7vh,64px);font-weight:700;color:var(--sub);margin-bottom:1vh}
+.ans{font-size:clamp(70px,22vh,210px);font-weight:800;color:var(--ans);line-height:1.1}
+.yomi{font-size:clamp(28px,7vh,64px);font-weight:700;margin-top:1vh}
+.end{align-items:center;justify-content:center;gap:3vh;text-align:center}
+.end .big{font-size:clamp(40px,12vh,110px);font-weight:800}
+.end button{padding:2vh 4vw;font-size:clamp(20px,4vh,34px);font-weight:700}
+.screen{overflow-y:auto}
+.vsb{display:none;position:fixed;right:calc(8px + env(safe-area-inset-right,0px));bottom:calc(6px + env(safe-area-inset-bottom,0px));font-size:13px;padding:4px 10px;border-width:1px;border-radius:10px;opacity:.22;background:transparent}
+#home.on~.vsb{display:block}
+body.vs #home.on~.vsb{display:none}
+.vsonly{display:none}
+body.vs .vsonly{display:block}
+.exit{display:none;position:fixed;right:calc(2vw + env(safe-area-inset-right,0px));bottom:calc(2vh + env(safe-area-inset-bottom,0px));padding:1.6vh 2.4vw;font-size:clamp(16px,3vh,26px);font-weight:700;background:#e5484d;border-color:#e5484d;color:#fff;z-index:20}
+body.vs .exit{display:block}
+body.vs .screen{padding-bottom:12vh}
+body.vs #back{visibility:hidden}
+.turn{font-size:clamp(18px,3.6vh,30px);font-weight:800;padding:.6vh 2.4vw;border-radius:99px}
+.turn.k{background:var(--main);color:var(--mainink)}
+.turn.o{background:#e08a1e;color:#fff}
+.dr{display:flex;align-items:center;justify-content:center;gap:5vw;margin-top:1vh}
+.die{width:24vh;height:24vh;background:#fff;border:.8vh solid #1d2b3a;border-radius:3vh;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);padding:2vh}
+.die i{border-radius:50%;margin:10%}
+.die i.p{background:#1d2b3a}
+.die.mini{width:7vh;height:7vh;border-width:.5vh;border-radius:1.2vh;padding:.8vh;margin:0 auto}
+.dr .die,.mark{width:20vh;height:20vh}
+.mark svg{width:100%;height:100%}
+.gbtn{padding:2vh 4vw;font-size:clamp(20px,4vh,34px);font-weight:700}
+body.vs #modes button[data-v=voice]{display:none}
+.helpb{align-self:flex-end;padding:1vh 2vw;font-size:clamp(14px,2.6vh,22px);font-weight:700}
+.help{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:30;padding:3vh 4vw}
+.help.on{display:flex}
+.help .box{background:var(--card);border-radius:24px;padding:3vh 3vw;max-width:900px;max-height:100%;overflow:auto;font-size:clamp(16px,3vh,26px);line-height:1.7}
+.help p{margin:0 0 1.2vh;padding-left:1.2em;text-indent:-1.2em}
+.help .cl{display:block;margin:1.5vh auto 0;padding:1.4vh 3vw;font-size:inherit;font-weight:700;background:var(--main);color:var(--mainink);border-color:var(--main)}
+
+.gbtn{padding:2vh 4vw;font-size:clamp(20px,4vh,34px);font-weight:700}</style></head><body>
+<section id="home" class="screen on"><div class="home"><h1>こえで1ぷん（テスト）</h1><div class="msg" id="env"></div>
+<div><h2>だんをえらぶ</h2><div class="row" id="dans"></div><div class="tools"><button id="all">ぜんぶ</button><button id="none">クリア</button></div></div>
+<button class="start" id="start">つぎへ</button></div></section>
+<section id="voice" class="screen"><div class="top"><button id="vback">もどる</button><div class="count" id="vtime"></div><div class="count" id="vscore"></div></div><div class="play" id="vplay"></div>
+<div style="font-size:14px;color:var(--sub);margin-top:1vh;max-height:16vh;overflow:auto"><div id="live"></div><div id="log"></div></div></section>
+<script>
+const $=id=>document.getElementById(id);
+const R=[
+"いんいちが いち/いんにが に/いんさんが さん/いんしが し/いんごが ご/いんろくが ろく/いんしちが しち/いんはちが はち/いんくが く",
+"にいちが に/ににんが し/にさんが ろく/にしが はち/にご じゅう/にろく じゅうに/にしち じゅうし/にはち じゅうろく/にく じゅうはち",
+"さんいちが さん/さんにが ろく/さざんが く/さんし じゅうに/さんご じゅうご/さぶろく じゅうはち/さんしち にじゅういち/さんぱ にじゅうし/さんく にじゅうしち",
+"しいちが し/しにが はち/しさん じゅうに/しし じゅうろく/しご にじゅう/しろく にじゅうし/ししち にじゅうはち/しは さんじゅうに/しく さんじゅうろく",
+"ごいちが ご/ごに じゅう/ごさん じゅうご/ごし にじゅう/ごご にじゅうご/ごろく さんじゅう/ごしち さんじゅうご/ごは しじゅう/ごっく しじゅうご",
+"ろくいちが ろく/ろくに じゅうに/ろくさん じゅうはち/ろくし にじゅうし/ろくご さんじゅう/ろくろく さんじゅうろく/ろくしち しじゅうに/ろくは しじゅうはち/ろっく ごじゅうし",
+"しちいちが しち/しちに じゅうし/しちさん にじゅういち/しちし にじゅうはち/しちご さんじゅうご/しちろく しじゅうに/しちしち しじゅうく/しちは ごじゅうろく/しちく ろくじゅうさん",
+"はちいちが はち/はちに じゅうろく/はちさん にじゅうし/はっし さんじゅうに/はちご しじゅう/はちろく しじゅうはち/はちしち ごじゅうろく/はっぱ ろくじゅうし/はっく しちじゅうに",
+"くいちが く/くに じゅうはち/くさん にじゅうしち/くし さんじゅうろく/くご しじゅうご/くろく ごじゅうし/くしち ろくじゅうさん/くは しちじゅうに/くく はちじゅういち"
+].map(s=>s.split("/"));
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition,KD="〇一二三四五六七八九";
+let vrec=null,vend=0,vscore=0,vq=null,vrun=false,vlast=-1,vtm=null,vpool=[];
+function k2(n){return n<10?KD[n]:(n<20?"十":KD[Math.floor(n/10)]+"十")+(n%10?KD[n%10]:"")}
+function judge(t,q){
+ t=t.replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-65248)).replace(/[ァ-ン]/g,c=>String.fromCharCode(c.charCodeAt(0)-96)).replace(/[、。,.!?！？]/g,"");
+ const s=t.split(" ").join(""),n=q.a*q.b,rd=R[q.a-1][q.b-1],ar=rd.split(" ")[1],k=k2(n);
+ if(new RegExp("(^|[^0-9])"+n+" *$").test(t))return true;
+ if(s.endsWith(rd.replace(" ","")))return true;
+ if(s.endsWith(ar)){const p=s.slice(0,s.length-ar.length);if(!/(じゅう|ひゃく)$/.test(p)&&(ar.length>1||!p||/が$/.test(p)))return true}
+ if(s.endsWith(k)){const p=s.slice(0,s.length-k.length);if(!((n<10&&/十$/.test(p))||(n>=10&&k[0]==="十"&&/[二三四五六七八九]$/.test(p))))return true}
+ return false}
+function vStop(){vrun=false;clearInterval(vtm);try{vrec&&vrec.abort()}catch(_){}}
+function vHome(){vStop();$("vtime").textContent="";$("vscore").textContent="";
+ $("vplay").innerHTML=SR?`<div class="q" style="font-size:clamp(34px,9vh,80px)">1ぷんで いくつ いえるかな？</div><div class="hint">もんだいを こえに だして いってね（マイクを つかいます）</div><button class="start" id="vgo" style="width:auto;padding:2vh 6vw;margin-top:3vh">スタート</button>`:`<div class="hint">このブラウザでは おんせいにんしきが つかえません（Chromeなどで ひらいてね）</div>`;
+ if(SR)$("vgo").onclick=vGo;show("voice")}
+function vDraw(ok){$("vscore").textContent="せいかい "+vscore;
+ $("vplay").innerHTML=`<div class="q">${vq.a} × ${vq.b}</div><div class="hint" id="vheard" style="${ok?"color:var(--ans);font-weight:800":""}">${ok?"○ せいかい！":"こえを まっているよ…"}</div><button class="gbtn" id="vpass" style="margin-top:2vh;font-size:clamp(16px,3vh,26px)">パス</button>`;
+ $("vpass").onclick=()=>{vq=pick(vpool);vDraw(false)}}
+function vFail(m){vStop();$("vplay").innerHTML=`<div class="hint">${m}</div>`}
+function vEnd(){vStop();$("vtime").textContent="";
+ $("vplay").innerHTML=`<div class="q" style="font-size:clamp(34px,8vh,70px)">おしまい！</div><div class="ans">${vscore}<span style="font-size:.35em"> もん せいかい</span></div><div class="row" style="margin-top:2vh"><button class="gbtn" id="vagain">もういちど</button><button class="gbtn" id="vhome">ホームへ</button></div>`;
+ $("vagain").onclick=vGo;$("vhome").onclick=()=>show("home")}
+function vGo(){vStop();vpool=[];[...sel].forEach(a=>{for(let b=1;b<=9;b++)vpool.push({a,b})});
+ vscore=0;vlast=-1;last=null;vend=Date.now()+60000;vrun=true;vq=pick(vpool);vDraw(false);
+ vrec=new SR();vrec.lang="ja-JP";vrec.continuous=true;vrec.interimResults=true;
+ vrec.onresult=e=>{for(let i=e.resultIndex;i<e.results.length;i++){if(i<=vlast)continue;const t=e.results[i][0].transcript,h=$("vheard");
+  if(h&&vrun)h.textContent="きこえたよ："+t;
+  vlog(t,e.results[i].isFinal,vq);
+  if(vrun&&judge(t,vq)){vlast=i;vscore++;vq=pick(vpool);vDraw(true);break}}};
+ vrec.onerror=e=>{if(e.error==="not-allowed"||e.error==="service-not-allowed")vFail("マイクが つかえません。マイクのきょかを たしかめてね")};
+ vrec.onend=()=>{if(vrun){vlast=-1;try{vrec.start()}catch(_){}}};
+ try{vrec.start()}catch(_){}
+ vtm=setInterval(()=>{const r=Math.max(0,Math.ceil((vend-Date.now())/1000));$("vtime").textContent="のこり "+r+"びょう";if(r<=0)vEnd()},250)}
+$("vback").onclick=()=>{vStop();show("home")};
+
+function vlog(t,f,q){$("live").textContent="いま きこえている："+t;
+ if(f){const d=document.createElement("div");d.textContent=(judge(t,q)?"○ ":"× ")+q.a+"×"+q.b+" ← "+t;$("log").prepend(d)}}
+const sel=new Set([2]);let last=null;
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id))}
+function pick(pool){let q,t=0;do{q=pool[Math.floor(Math.random()*pool.length)];t++}while(pool.length>1&&last&&q.a===last.a&&q.b===last.b&&t<20);last=q;return q}
+function refresh(){document.querySelectorAll("#dans button").forEach(b=>b.setAttribute("aria-pressed",sel.has(+b.dataset.v)));$("start").disabled=!sel.size}
+for(let d=1;d<=9;d++){const w=document.createElement("div");w.className="dan";const b=document.createElement("button");b.textContent=d;b.dataset.v=d;b.onclick=()=>{sel.has(d)?sel.delete(d):sel.add(d);refresh()};w.appendChild(b);$("dans").appendChild(w)}
+$("all").onclick=()=>{for(let d=1;d<=9;d++)sel.add(d);refresh()};
+$("none").onclick=()=>{sel.clear();refresh()};
+$("start").onclick=vHome;
+$("env").textContent="おんせいにんしき："+(SR?"つかえる":"つかえない")+" ／ あんぜんなせつぞく："+(window.isSecureContext?"はい":"いいえ")+" ／ ひょうじ："+(window.top!==window?"うめこみ":"たんどく");
+refresh();
+</script></body></html>
